@@ -5,7 +5,7 @@
 ---
 
 ## 1. Overview
-
+```text
 This repository contains the full implementation, training scripts, and test results for my face verification project.  
 The experiments evaluate how **loss functions**, **optimizers**, **learning-rate schedulers**, and **backbone regularization** affect margin-based embedding learning.
 
@@ -21,9 +21,9 @@ The final model (**Exp04-AAM**) achieves:
 
 The required test output file is included as:
 
-`exp04-AAM_test_ep12.csv`
+exp04-AAM_test_ep12.csv
+```
 
----
 
 ## 2. File Structure
 
