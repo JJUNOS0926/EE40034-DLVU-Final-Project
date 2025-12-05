@@ -53,6 +53,8 @@ exp04-AAM_test_ep12.csv  Final test output (submission)
 ```
 
 ## 3. How to Reproduce Experiments
+
+```text
 3.1 Train1 (from scratch)
 Run the following depending on the experiment:
 
@@ -73,8 +75,11 @@ bash scripts/exp04-AAM_train2.sh   # Final Model
 The best final model is:
 
 Exp04-AAM (Train2 epoch 12)
+```
+
 
 ## 4. Running Test Evaluation
+```text
 Use the following command to generate the test CSV file:
 
 bash
@@ -85,8 +90,10 @@ python trainEmbedNet.py \
   --test_path /mnt/home/ee40034/data/test \
   --test_list /mnt/home/ee40034/data/test_pairs.csv \
   --output exp04-AAM_test_ep12.csv
+```
 
 ## 5. Summary of Experimental Settings
+```text
 Exp01 – Softmax Baseline
 Loss: Softmax
 
@@ -125,8 +132,10 @@ Train2: AAM-Softmax + SGD + CosineLR
 Best epoch: 12
 
 Test EER: 9.219%
+```
 
 ## 6. Final Submitted Files
+```text
 exp04-AAM_test_ep12.csv
 
 scripts/ (all training scripts)
@@ -134,6 +143,7 @@ scripts/ (all training scripts)
 All model, loss, scheduler, optimizer implementation files
 
 No additional preprocessing scripts were used.
+```
 
 ## 7. Reproducibility
 All experimental results can be fully reproduced using the included scripts.
