@@ -1,52 +1,150 @@
-# Face embedding trainer
+# Face Verification with Margin-Based Embedding
+**EE40034 Deep Learning for Visual Understanding – Final Project**  
+**Student:** Junsu Kim (20210151)
 
-This repository contains the framework for training deep embeddings for face recognition. The trainer is intended for the face recognition exercise of the EE488 Deep Learning for Visual Understanding course.
+---
 
-### Dependencies
-```
-pip install -r requirements.txt
-```
+## 1. Overview
 
-### Training examples
+This repository contains the full implementation, training scripts, and test results for my face verification project.  
+The experiments evaluate how **loss functions**, **optimizers**, **learning-rate schedulers**, and **backbone regularization** affect margin-based embedding learning.
 
-- Softmax:
-```
-python ./trainEmbedNet.py --model ResNet18 --trainfunc softmax --save_path exps/exp1 --nClasses 2000 --batch_size 200 --gpu 8
-```
+The project follows a **two-stage training pipeline**:
 
-GPU ID must be specified using `--gpu` flag.
+- **Train1:** From-scratch embedding learning  
+- **Train2:** Fine-tuning using the best Train1 checkpoint  
 
-Use `--mixedprec` flag to enable mixed precision training. This is recommended for Tesla V100, GeForce RTX 20 series or later models.
+The final model (**Exp04-AAM**) achieves:
 
-### Implemented loss functions
-```
-Softmax (softmax)
-Triplet (triplet)
-```
+- **Validation EER:** 8.51%  
+- **Test EER:** 9.219% (official evaluation)
 
-For softmax-based losses, `nPerClass` should be 1, and `nClasses` must be specified. For metric-based losses, `nPerClass` should be 2 or more. 
+The required test output file is included as:
 
-### Implemented models
-```
-ResNet18
-```
+'exp04-AAM_test_ep12.csv`
 
-### Adding new models and loss functions
+---
 
-You can add new models and loss functions to `models` and `loss` directories respectively. See the existing definitions for examples.
+## 2. File Structure
 
-### Data
 
-The test list should contain labels and image pairs, one line per pair, as follows. `1` is a target and `0` is an imposter.
-```
-1,id10001/00001.jpg,id10001/00002.jpg
-0,id10001/00003.jpg,id10002/00001.jpg
-```
+trainEmbedNet.py         Main training & evaluation script  
+DatasetLoader.py         Dataset loading utilities  
+EmbedNet.py              Embedding network wrapper  
 
-The folders in the training set should contain images for each identity (i.e. `identity/image.jpg`).
+loss/                    Loss implementations  
+models/                  Backbone (ResNet18)  
+optimizer/               SGD / Adam  
+scheduler/               StepLR / CosineLR  
 
-The input transformations can be changed in the code.
+scripts/                 All training scripts (Train1 & Train2)
+    exp01_train1.sh      Softmax baseline
+    exp01_train2.sh      Softmax backbone + Config C
+    exp02_train1.sh      AM-Softmax + SGD + StepLR
+    exp02_train2.sh      Config A–D
+    exp03_train1.sh      AM-Softmax + SGD + CosineLR
+    exp03_train2.sh      Exp03 backbone + Config C
+    exp04_train1.sh      Dropout backbone + class reduction
+    exp04_train2.sh      Exp04-AM (Train2)
+    exp04-AAM_train1.sh  Dropout backbone (same as Exp04)
+    exp04-AAM_train2.sh  Final model (epoch 12)
 
-### Inference
+exp04-AAM_test_ep12.csv  Final test output (submission)
 
-In order to save pairwise similarity scores to file, use `--output` flag.
+
+
+3. How to Reproduce Experiments
+3.1 Train1 (from scratch)
+
+Run the following depending on the experiment:
+
+bash scripts/exp01_train1.sh
+bash scripts/exp02_train1.sh
+bash scripts/exp03_train1.sh
+bash scripts/exp04_train1.sh
+
+3.2 Train2 (fine-tuning)
+
+Run the corresponding Train2 script:
+
+bash scripts/exp01_train2.sh
+bash scripts/exp02_train2.sh
+bash scripts/exp03_train2.sh
+bash scripts/exp04_train2.sh
+bash scripts/exp04-AAM_train2.sh   # Final Model
+
+
+The best final model is:
+
+Exp04-AAM (Train2 epoch 12)
+
+4. Running Test Evaluation
+
+Use the following command to generate the test CSV file:
+
+python trainEmbedNet.py \
+  --gpu <GPU_ID> \
+  --eval \
+  --initial_model <PATH_TO_EXP04_AAM_EPOCH12> \
+  --test_path /mnt/home/ee40034/data/test \
+  --test_list /mnt/home/ee40034/data/test_pairs.csv \
+  --output exp04-AAM_test_ep12.csv
+
+5. Summary of Experimental Settings
+Exp01 – Softmax Baseline
+
+Loss: Softmax
+
+Optimizer: Adam
+
+Scheduler: StepLR
+
+Exp02 – Margin-Based Initialization
+
+Loss: AM-Softmax
+
+Optimizer: SGD
+
+Scheduler: StepLR
+
+Exp03 – Alternative Scheduler
+
+Loss: AM-Softmax
+
+Optimizer: SGD
+
+Scheduler: CosineLR
+
+Exp04 – Regularized Backbone + Class Reduction
+
+Dropout: p = 0.4
+
+Train1 classes: ~3000 IDs
+
+Train2 classes: 949 IDs
+
+Loss: AM-Softmax (Train1), AAM-Softmax (Train2)
+
+Exp04-AAM – Final Model
+
+Train1: AM-Softmax + SGD + StepLR
+
+Train2: AAM-Softmax + SGD + CosineLR
+
+Best epoch: 12
+
+Test EER: 9.219%
+
+6. Final Submitted Files
+
+exp04-AAM_test_ep12.csv
+
+scripts/ (all training shell scripts)
+
+trainEmbedNet.py, DatasetLoader.py, and all loss/model/scheduler/optimizer files
+
+No additional preprocessing scripts were used.
+
+7. Reproducibility
+
+All experimental results can be fully reproduced using the scripts included in this repository.
