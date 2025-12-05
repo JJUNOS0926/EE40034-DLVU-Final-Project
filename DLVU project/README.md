@@ -50,7 +50,9 @@ scripts/                 All training scripts (Train1 & Train2)
     exp04-AAM_train2.sh  Final model (epoch 12)
 
 exp04-AAM_test_ep12.csv  Final test output (submission)
-3. How to Reproduce Experiments
+```
+
+## 3. How to Reproduce Experiments
 3.1 Train1 (from scratch)
 Run the following depending on the experiment:
 
