@@ -21,13 +21,13 @@ The final model (**Exp04-AAM**) achieves:
 
 The required test output file is included as:
 
-'exp04-AAM_test_ep12.csv`
+`exp04-AAM_test_ep12.csv`
 
 ---
 
 ## 2. File Structure
 
-
+```text
 trainEmbedNet.py         Main training & evaluation script  
 DatasetLoader.py         Dataset loading utilities  
 EmbedNet.py              Embedding network wrapper  
@@ -50,38 +50,32 @@ scripts/                 All training scripts (Train1 & Train2)
     exp04-AAM_train2.sh  Final model (epoch 12)
 
 exp04-AAM_test_ep12.csv  Final test output (submission)
-
-
-
 3. How to Reproduce Experiments
 3.1 Train1 (from scratch)
-
 Run the following depending on the experiment:
 
+bash
 bash scripts/exp01_train1.sh
 bash scripts/exp02_train1.sh
 bash scripts/exp03_train1.sh
 bash scripts/exp04_train1.sh
-
 3.2 Train2 (fine-tuning)
-
 Run the corresponding Train2 script:
 
+bash
 bash scripts/exp01_train2.sh
 bash scripts/exp02_train2.sh
 bash scripts/exp03_train2.sh
 bash scripts/exp04_train2.sh
 bash scripts/exp04-AAM_train2.sh   # Final Model
-
-
 The best final model is:
 
 Exp04-AAM (Train2 epoch 12)
 
 4. Running Test Evaluation
-
 Use the following command to generate the test CSV file:
 
+bash
 python trainEmbedNet.py \
   --gpu <GPU_ID> \
   --eval \
@@ -89,10 +83,8 @@ python trainEmbedNet.py \
   --test_path /mnt/home/ee40034/data/test \
   --test_list /mnt/home/ee40034/data/test_pairs.csv \
   --output exp04-AAM_test_ep12.csv
-
 5. Summary of Experimental Settings
 Exp01 – Softmax Baseline
-
 Loss: Softmax
 
 Optimizer: Adam
@@ -100,7 +92,6 @@ Optimizer: Adam
 Scheduler: StepLR
 
 Exp02 – Margin-Based Initialization
-
 Loss: AM-Softmax
 
 Optimizer: SGD
@@ -108,7 +99,6 @@ Optimizer: SGD
 Scheduler: StepLR
 
 Exp03 – Alternative Scheduler
-
 Loss: AM-Softmax
 
 Optimizer: SGD
@@ -116,17 +106,15 @@ Optimizer: SGD
 Scheduler: CosineLR
 
 Exp04 – Regularized Backbone + Class Reduction
-
 Dropout: p = 0.4
 
-Train1 classes: ~3000 IDs
+Train1 classes: ~3000
 
-Train2 classes: 949 IDs
+Train2 classes: 949
 
 Loss: AM-Softmax (Train1), AAM-Softmax (Train2)
 
 Exp04-AAM – Final Model
-
 Train1: AM-Softmax + SGD + StepLR
 
 Train2: AAM-Softmax + SGD + CosineLR
@@ -136,15 +124,13 @@ Best epoch: 12
 Test EER: 9.219%
 
 6. Final Submitted Files
-
 exp04-AAM_test_ep12.csv
 
-scripts/ (all training shell scripts)
+scripts/ (all training scripts)
 
-trainEmbedNet.py, DatasetLoader.py, and all loss/model/scheduler/optimizer files
+All model, loss, scheduler, optimizer implementation files
 
 No additional preprocessing scripts were used.
 
 7. Reproducibility
-
-All experimental results can be fully reproduced using the scripts included in this repository.
+All experimental results can be fully reproduced using the included scripts.
